@@ -1,6 +1,7 @@
 from flask import  Flask, redirect, url_for, request, render_template
 import torch
 from torch import nn
+from torch.utils.data import DataLoader,Dataset
 
 #import pandas as pd
 
@@ -60,15 +61,15 @@ img_folder = 'upload'
 def model_predict(img_path, model):
     img = cv2.imread(img_path)
     dataset = ImageFolder(img_folder,transform = transform)
-    i = len(dataset)-1
-    img,_ = dataset[i]
-    img = torch.unsqueeze(img,0)
-   # img = img.clone().detach()
-    pred = model(img)
-    _,preds=torch.max(pred,dim=1)
-    if preds==0:
+    batch_size = len(dataset)
+    df = DataLoader(dataset,batch_size = batch_size)
+    for i in df:
+        img,label = i
+        pred = model(img)
+        _,preds=torch.max(pred,dim=1)
+    if preds[batch_size -1]==0:
         preds="Patient is covid positive"
-    elif preds==1:
+    elif preds[batch_size - 1]==1:
         preds = "Patient is covid negative"
     
     
