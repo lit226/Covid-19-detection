@@ -5,6 +5,16 @@
 
 Covid 19 detection detects patient suffering from coronavirus using their x-ray images.
 
+## Transfer Learning
+Transfer learning is the reuse of a pre-trained model on a new problem. It's currently very popular in deep learning because it can train deep neural networks with comparatively little data.
+
+## Model Used
+### Efficientnet
+EfficientNet is a convolutional neural network architecture and scaling method that uniformly scales all dimensions of depth/width/resolution using a compound coefficient.
+
+### Architecture
+![EfficientNet3D-B0-Architecture](https://user-images.githubusercontent.com/56024169/136725308-ca85387c-59d7-48cd-a31a-cf791041dbc3.png)
+
 ## How to run the project?
 1. Clone this repository in your local system.
 2. Install all the libraries mentioned in the [requirements.txt](https://github.com/lit226/Covid-19-detection/blob/main/requirements.txt) file with the command `pip install -r requirements.txt`
