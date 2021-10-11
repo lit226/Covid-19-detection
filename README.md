@@ -13,6 +13,7 @@ Transfer learning is the reuse of a pre-trained model on a new problem. It's cur
 EfficientNet is a convolutional neural network architecture and scaling method that uniformly scales all dimensions of depth/width/resolution using a compound coefficient.
 
 ### Architecture
+![EfficientNet3D-B0-Architecture](https://user-images.githubusercontent.com/56024169/136725308-ca85387c-59d7-48cd-a31a-cf791041dbc3.png)
 
 ## How to run the project?
 1. Clone this repository in your local system.
