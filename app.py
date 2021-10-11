@@ -1,6 +1,7 @@
 from flask import  Flask, redirect, url_for, request, render_template
 import torch
 from torch import nn
+from torch.utils.data import DataLoader,Dataset
 
 #import pandas as pd
 
@@ -15,9 +16,9 @@ from torchvision import transforms
 #from tqdm import tqdm
 import pickle
 import os
-import albumentations as A
-from albumentations.pytorch import ToTensorV2
-import albumentations
+import torchvision
+from torchvision import transforms
+from torchvision.datasets import ImageFolder
 import timm
 #from gevent.pywsgi import WSGIServer
 
@@ -25,20 +26,12 @@ import timm
 
 
 app = Flask(__name__,template_folder = 'templates')
-app.config['UPLOAD_FOLDER'] = 'Dataset.zip/upload'
+app.config['UPLOAD_FOLDER'] = 'upload/image'
 
-# Model saved with Keras model.save()
-MODEL_PATH ='efficientnet_model.pkl'
+# Model saved with pytorch model.save()
 model_path = 'efficientnet_model.pth'
 
-# Load your trained model
 
-
-transform=A.Compose([
-    A.Normalize(),                          
-    A.Resize(64,64),
-    ToTensorV2()
-])
 
 class Model(nn.Module):
     def __init__(self, model_arch, n_class, pretrained=False):
@@ -55,25 +48,28 @@ class Model(nn.Module):
     
 model = Model('tf_efficientnet_b4_ns',2)
 
-'''
-with open(MODEL_PATH,'rb') as f:
-    model = pickle.load(f)
-'''
+# Load your trained model
 model.load_state_dict(torch.load(model_path , map_location=torch.device('cpu')))
 
+#transformation for the data
+transform=transforms.Compose([
+                              transforms.Resize([64,64]),
+                              transforms.ToTensor()
+])
 
-
+img_folder = 'upload'
 def model_predict(img_path, model):
     img = cv2.imread(img_path)
-    Transformed_image = transform(image = img)
-    img = Transformed_image['image']
-    img = torch.unsqueeze(img,0)
-   # img = img.clone().detach()
-    pred = model(img)
-    _,preds=torch.max(pred,dim=1)
-    if preds==0:
+    dataset = ImageFolder(img_folder,transform = transform)
+    batch_size = len(dataset)
+    df = DataLoader(dataset,batch_size = batch_size)
+    for i in df:
+        img,label = i
+        pred = model(img)
+        _,preds=torch.max(pred,dim=1)
+    if preds[batch_size -1]==0:
         preds="Patient is covid positive"
-    elif preds==1:
+    elif preds[batch_size - 1]==1:
         preds = "Patient is covid negative"
     
     
