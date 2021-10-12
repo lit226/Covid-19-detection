@@ -67,9 +67,10 @@ def model_predict(img_path, model):
         img,label = i
         pred = model(img)
         _,preds=torch.max(pred,dim=1)
+    preds = preds.cpu().detach().numpy()
     if preds[batch_size -1]==0:
         preds="Patient is covid positive"
-    elif preds[batch_size - 1]==1:
+    elif preds[batch_size -1 ]==1:
         preds = "Patient is covid negative"
     
     
@@ -99,6 +100,7 @@ def upload():
         # Make prediction
         preds = model_predict(file_path, model)
         result=preds
+        os.remove(file_path)
         return result
     return None
 
