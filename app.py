@@ -1,4 +1,5 @@
 from flask import  Flask, redirect, url_for, request, render_template
+# import pytorch
 import torch
 from torch import nn
 from torch.utils.data import DataLoader,Dataset
@@ -10,7 +11,7 @@ import cv2
 from werkzeug.utils import secure_filename
 import warnings
 import random
-import timm
+import timm # for model
 import torchvision
 from torchvision import transforms
 #from tqdm import tqdm
@@ -19,7 +20,7 @@ import os
 import torchvision
 from torchvision import transforms
 from torchvision.datasets import ImageFolder
-import timm
+
 #from gevent.pywsgi import WSGIServer
 
 # Define a flask app
@@ -58,6 +59,8 @@ transform=transforms.Compose([
 ])
 
 img_folder = 'upload'
+
+# make predictions based on the file path
 def model_predict(img_path, model):
     img = cv2.imread(img_path)
     dataset = ImageFolder(img_folder,transform = transform)
@@ -100,6 +103,7 @@ def upload():
         # Make prediction
         preds = model_predict(file_path, model)
         result=preds
+        # remove file 
         os.remove(file_path)
         return result
     return None
